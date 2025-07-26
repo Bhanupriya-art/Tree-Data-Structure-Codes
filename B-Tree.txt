@@ -1,0 +1,225 @@
+// Java - Simple B-Tree (Insert + Print)
+import java.util.*;
+class BTreeNode {
+    int[] keys = new int[3];  // Max 2 keys
+    BTreeNode[] children = new BTreeNode[4];
+    int n = 0;
+    boolean leaf = true;
+}
+class BTree {
+    BTreeNode root = new BTreeNode();
+    void traverse(BTreeNode node) {
+        for (int i = 0; i < node.n; i++) {
+            if (!node.leaf) traverse(node.children[i]);
+            System.out.print(node.keys[i] + " ");
+        }
+        if (!node.leaf) traverse(node.children[node.n]);
+    }
+    void insert(int key) {
+        BTreeNode r = root;
+        if (r.n == 2) {
+            BTreeNode s = new BTreeNode();
+            root = s;
+            s.leaf = false;
+            s.children[0] = r;
+            splitChild(s, 0);
+            insertNonFull(s, key);
+        } else insertNonFull(r, key);
+    }
+    void insertNonFull(BTreeNode x, int key) {
+        int i = x.n - 1;
+        if (x.leaf) {
+            while (i >= 0 && key < x.keys[i]) {
+                x.keys[i + 1] = x.keys[i];
+                i--;
+            }
+            x.keys[i + 1] = key;
+            x.n++;
+        } else {
+            while (i >= 0 && key < x.keys[i]) i--;
+            i++;
+            if (x.children[i].n == 2) {
+                splitChild(x, i);
+                if (key > x.keys[i]) i++;
+            }
+            insertNonFull(x.children[i], key);
+        }
+    }
+    void splitChild(BTreeNode x, int i) {
+        BTreeNode y = x.children[i];
+        BTreeNode z = new BTreeNode();
+        z.leaf = y.leaf;
+        z.n = 1;
+        z.keys[0] = y.keys[1];
+        if (!y.leaf) {
+            z.children[0] = y.children[2];
+            z.children[1] = y.children[3];
+        }
+        y.n = 1;
+        for (int j = x.n; j >= i + 1; j--) x.children[j + 1] = x.children[j];
+        x.children[i + 1] = z;
+        for (int j = x.n - 1; j >= i; j--) x.keys[j + 1] = x.keys[j];
+        x.keys[i] = y.keys[1];
+        x.n++;
+    }
+    public static void main(String[] args) {
+        BTree t = new BTree();
+        int[] vals = {10, 20, 5, 6, 12, 30, 7, 17};
+        for (int v : vals) t.insert(v);
+        t.traverse(t.root); // Output: 5 6 7 10 12 17 20 30
+    }
+}
+# Python - Simple B-Tree (Order 3)
+class BTreeNode:
+    def __init__(self, leaf=False):
+        self.keys = []
+        self.children = []
+        self.leaf = leaf
+
+class BTree:
+    def __init__(self):
+        self.root = BTreeNode(True)
+
+    def insert(self, key):
+        root = self.root
+        if len(root.keys) == 2:
+            temp = BTreeNode()
+            temp.children.insert(0, root)
+            self._split_child(temp, 0)
+            self._insert_non_full(temp, key)
+            self.root = temp
+        else:
+            self._insert_non_full(root, key)
+
+    def _insert_non_full(self, node, key):
+        i = len(node.keys) - 1
+        if node.leaf:
+            node.keys.append(0)
+            while i >= 0 and key < node.keys[i]:
+                node.keys[i + 1] = node.keys[i]
+                i -= 1
+            node.keys[i + 1] = key
+        else:
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            i += 1
+            if len(node.children[i].keys) == 2:
+                self._split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self._insert_non_full(node.children[i], key)
+
+    def _split_child(self, parent, i):
+        node = parent.children[i]
+        mid = node.keys[1]
+        left = BTreeNode(node.leaf)
+        right = BTreeNode(node.leaf)
+        left.keys = [node.keys[0]]
+        right.keys = [node.keys[2]] if len(node.keys) > 2 else []
+        if not node.leaf:
+            left.children = node.children[:2]
+            right.children = node.children[2:]
+        parent.children.insert(i + 1, right)
+        parent.keys.insert(i, mid)
+        parent.children[i] = left
+
+    def traverse(self, node=None):
+        if node is None:
+            node = self.root
+        for i in range(len(node.keys)):
+            if not node.leaf:
+                self.traverse(node.children[i])
+            print(node.keys[i], end=" ")
+        if not node.leaf:
+            self.traverse(node.children[-1])
+
+b = BTree()
+for x in [10, 20, 5, 6, 12, 30, 7, 17]:
+    b.insert(x)
+b.traverse()  # Output: 5 6 7 10 12 17 20 30
+// C++ - B-Tree simplified (Order 3) — insert + traverse
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct BTreeNode {
+    vector<int> keys;
+    vector<BTreeNode*> children;
+    bool leaf;
+    BTreeNode(bool isLeaf) : leaf(isLeaf) {}
+};
+
+class BTree {
+public:
+    BTreeNode* root;
+    BTree() { root = new BTreeNode(true); }
+
+    void traverse(BTreeNode* node) {
+        for (int i = 0; i < node->keys.size(); ++i) {
+            if (!node->leaf) traverse(node->children[i]);
+            cout << node->keys[i] << " ";
+        }
+        if (!node->leaf) traverse(node->children.back());
+    }
+
+    void insert(int key) {
+        if (root->keys.size() == 2) {
+            BTreeNode* s = new BTreeNode(false);
+            s->children.push_back(root);
+            splitChild(s, 0);
+            insertNonFull(s, key);
+            root = s;
+        } else {
+            insertNonFull(root, key);
+        }
+    }
+
+private:
+    void insertNonFull(BTreeNode* node, int key) {
+        int i = node->keys.size() - 1;
+        if (node->leaf) {
+            node->keys.push_back(0);
+            while (i >= 0 && key < node->keys[i]) {
+                node->keys[i + 1] = node->keys[i];
+                i--;
+            }
+            node->keys[i + 1] = key;
+        } else {
+            while (i >= 0 && key < node->keys[i]) i--;
+            i++;
+            if (node->children[i]->keys.size() == 2) {
+                splitChild(node, i);
+                if (key > node->keys[i]) i++;
+            }
+            insertNonFull(node->children[i], key);
+        }
+    }
+
+    void splitChild(BTreeNode* parent, int i) {
+        BTreeNode* y = parent->children[i];
+        BTreeNode* z = new BTreeNode(y->leaf);
+        z->keys.push_back(y->keys[1]);
+        if (!y->leaf) {
+            z->children.push_back(y->children[2]);
+            z->children.push_back(y->children[3]);
+        }
+        y->keys.pop_back();
+        y->keys.pop_back();
+        if (!y->leaf) {
+            y->children.pop_back();
+            y->children.pop_back();
+        }
+        parent->children.insert(parent->children.begin() + i + 1, z);
+        parent->keys.insert(parent->keys.begin() + i, y->keys.back());
+        y->keys.pop_back();
+    }
+};
+
+int main() {
+    BTree b;
+    for (int v : {10, 20, 5, 6, 12, 30, 7, 17})
+        b.insert(v);
+    b.traverse(b.root);  // Output: 5 6 7 10 12 17 20 30
+    return 0;
+}
