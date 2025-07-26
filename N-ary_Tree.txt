@@ -1,0 +1,65 @@
+// Java - N-ary Tree
+import java.util.*;
+class NaryNode {
+    int val;
+    List<NaryNode> children;
+    NaryNode(int val) {
+        this.val = val;
+        this.children = new ArrayList<>();
+    }
+}
+class NaryTree {
+    static void preorder(NaryNode node) {
+        if (node == null) return;
+        System.out.print(node.val + " ");
+        for (NaryNode child : node.children)
+            preorder(child);
+    }
+    public static void main(String[] args) {
+        NaryNode root = new NaryNode(1);
+        root.children.add(new NaryNode(2));
+        root.children.add(new NaryNode(3));
+        root.children.add(new NaryNode(4));
+        root.children.get(1).children.add(new NaryNode(5));
+        preorder(root);  // Output: 1 2 3 5 4
+    }
+}
+# Python - N-ary Tree
+class NaryNode:
+    def __init__(self, val):
+        self.val = val
+        self.children = []
+
+def preorder(node):
+    if node:
+        print(node.val, end=' ')
+        for child in node.children:
+            preorder(child)
+
+root = NaryNode(1)
+root.children = [NaryNode(2), NaryNode(3), NaryNode(4)]
+root.children[1].children = [NaryNode(5)]
+preorder(root)  # Output: 1 2 3 5 4
+// C++ - N-ary Tree
+#include <iostream>
+#include <vector>
+using namespace std;
+struct NaryNode {
+    int val;
+    vector<NaryNode*> children;
+    NaryNode(int v) : val(v) {}
+};
+void preorder(NaryNode* node) {
+    if (!node) return;
+    cout << node->val << " ";
+    for (auto child : node->children)
+        preorder(child);
+}
+int main() {
+    NaryNode* root = new NaryNode(1);
+    root->children.push_back(new NaryNode(2));
+    root->children.push_back(new NaryNode(3));
+    root->children.push_back(new NaryNode(4));
+    root->children[1]->children.push_back(new NaryNode(5));
+    preorder(root); // Output: 1 2 3 5 4
+}
