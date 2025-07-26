@@ -1,0 +1,125 @@
+// Java - DFS Inorder, Preorder, Postorder
+class Node {
+    int data;
+    Node left, right;
+    Node(int data) { this.data = data; }
+}
+
+class Traversal {
+    static void preorder(Node node) {
+        if (node == null) return;
+        System.out.print(node.data + " ");
+        preorder(node.left);
+        preorder(node.right);
+    }
+
+    static void inorder(Node node) {
+        if (node == null) return;
+        inorder(node.left);
+        System.out.print(node.data + " ");
+        inorder(node.right);
+    }
+
+    static void postorder(Node node) {
+        if (node == null) return;
+        postorder(node.left);
+        postorder(node.right);
+        System.out.print(node.data + " ");
+    }
+
+    public static void main(String[] args) {
+        Node root = new Node(1);
+        root.left = new Node(2);
+        root.right = new Node(3);
+        root.left.left = new Node(4);
+        root.left.right = new Node(5);
+
+        System.out.print("Preorder: ");
+        preorder(root);
+        System.out.print("\nInorder: ");
+        inorder(root);
+        System.out.print("\nPostorder: ");
+        postorder(root);
+    }
+}
+# Python - DFS Inorder, Preorder, Postorder
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = self.right = None
+
+def preorder(node):
+    if node:
+        print(node.data, end=" ")
+        preorder(node.left)
+        preorder(node.right)
+
+def inorder(node):
+    if node:
+        inorder(node.left)
+        print(node.data, end=" ")
+        inorder(node.right)
+
+def postorder(node):
+    if node:
+        postorder(node.left)
+        postorder(node.right)
+        print(node.data, end=" ")
+
+# Build the tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Preorder:", end=" ")
+preorder(root)
+print("\nInorder:", end=" ")
+inorder(root)
+print("\nPostorder:", end=" ")
+postorder(root)
+// C++ - DFS Inorder, Preorder, Postorder
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+void preorder(Node* node) {
+    if (!node) return;
+    cout << node->data << " ";
+    preorder(node->left);
+    preorder(node->right);
+}
+
+void inorder(Node* node) {
+    if (!node) return;
+    inorder(node->left);
+    cout << node->data << " ";
+    inorder(node->right);
+}
+
+void postorder(Node* node) {
+    if (!node) return;
+    postorder(node->left);
+    postorder(node->right);
+    cout << node->data << " ";
+}
+
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+
+    cout << "Preorder: "; preorder(root); cout << endl;
+    cout << "Inorder: "; inorder(root); cout << endl;
+    cout << "Postorder: "; postorder(root); cout << endl;
+    return 0;
+}
