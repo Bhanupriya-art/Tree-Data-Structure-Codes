@@ -1,0 +1,89 @@
+// Java - Binary Search Tree with Insert and Inorder Traversal
+class Node {
+    int data;
+    Node left, right;
+    Node(int data) { this.data = data; }
+}
+class BST {
+    static Node insert(Node root, int data) {
+        if (root == null) return new Node(data);
+        if (data < root.data) root.left = insert(root.left, data);
+        else root.right = insert(root.right, data);
+        return root;
+    }
+    static void inorder(Node root) {
+        if (root != null) {
+            inorder(root.left);
+            System.out.print(root.data + " ");
+            inorder(root.right);
+        }
+    }
+    public static void main(String[] args) {
+        int[] values = {5, 3, 7, 2, 4, 6, 8};
+        Node root = null;
+        for (int val : values)
+            root = insert(root, val);
+        inorder(root);  // Output: 2 3 4 5 6 7 8
+    }
+}
+# Python - Binary Search Tree with Insert and Inorder Traversal
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = self.right = None
+
+def insert(root, data):
+    if root is None:
+        return Node(data)
+    if data < root.data:
+        root.left = insert(root.left, data)
+    else:
+        root.right = insert(root.right, data)
+    return root
+
+def inorder(root):
+    if root:
+        inorder(root.left)
+        print(root.data, end=' ')
+        inorder(root.right)
+
+root = None
+for val in [5, 3, 7, 2, 4, 6, 8]:
+    root = insert(root, val)
+inorder(root)  # Output: 2 3 4 5 6 7 8
+// C++ - Binary Search Tree with Insert and Inorder Traversal
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int data) : data(data), left(NULL), right(NULL) {}
+};
+
+Node* insert(Node* root, int data) {
+    if (!root) return new Node(data);
+    if (data < root->data)
+        root->left = insert(root->left, data);
+    else
+        root->right = insert(root->right, data);
+    return root;
+}
+
+void inorder(Node* root) {
+    if (root) {
+        inorder(root->left);
+        cout << root->data << " ";
+        inorder(root->right);
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 7, 2, 4, 6, 8};
+    Node* root = nullptr;
+    for (int val : arr)
+        root = insert(root, val);
+    inorder(root);  // Output: 2 3 4 5 6 7 8
+    return 0;
+}
