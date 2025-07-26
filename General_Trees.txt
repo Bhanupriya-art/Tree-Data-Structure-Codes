@@ -1,0 +1,44 @@
+// Java
+import java.util.*;
+class Node {
+    int data;
+    List<Node> children = new ArrayList<>();
+    Node(int data) { this.data = data; }
+}
+class TreeExample {
+    public static void main(String[] args) {
+        Node root = new Node(1);
+        root.children.add(new Node(2));
+        root.children.add(new Node(3));
+        root.children.get(0).children.add(new Node(4));
+        System.out.println("Root: " + root.data);
+    }
+}
+# Python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.children = []
+
+root = Node(1)
+root.children.append(Node(2))
+root.children.append(Node(3))
+root.children[0].children.append(Node(4))
+print("Root:", root.data)
+// C++
+#include <iostream>
+#include <vector>
+using namespace std;
+struct Node {
+    int data;
+    vector<Node*> children;
+    Node(int data) : data(data) {}
+};
+int main() {
+    Node* root = new Node(1);
+    root->children.push_back(new Node(2));
+    root->children.push_back(new Node(3));
+    root->children[0]->children.push_back(new Node(4));
+    cout << "Root: " << root->data << endl;
+    return 0;
+}
