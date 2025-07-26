@@ -1,0 +1,141 @@
+// Java - Tree Representation
+
+// 1. Using Node class / Pointers
+class Node {
+    int data;
+    List<Node> children = new ArrayList<>();
+    Node(int data) { this.data = data; }
+}
+
+// 2. Using Arrays (Parent Array)
+class TreeArray {
+    int[] parent; // parent[i] = parent of node i
+    TreeArray(int[] p) { parent = p; }
+
+    void printChildren(int node) {
+        System.out.print("Children of " + node + ": ");
+        for (int i = 0; i < parent.length; i++)
+            if (parent[i] == node) System.out.print(i + " ");
+        System.out.println();
+    }
+}
+
+// 3. Using LinkedList (Adjacency List)
+class TreeList {
+    List<Integer>[] adj;
+    @SuppressWarnings("unchecked")
+    TreeList(int n) {
+        adj = new List[n];
+        for (int i = 0; i < n; i++)
+            adj[i] = new LinkedList<>();
+    }
+    void addEdge(int u, int v) {
+        adj[u].add(v); // Directed
+    }
+    void printTree() {
+        for (int i = 0; i < adj.length; i++) {
+            System.out.print(i + " -> " + adj[i] + "\n");
+        }
+    }
+}
+
+public class TreeReps {
+    public static void main(String[] args) {
+        // Node/Pointers
+        Node root = new Node(0);
+        Node n1 = new Node(1), n2 = new Node(2), n3 = new Node(3), n4 = new Node(4);
+        root.children.add(n1); root.children.add(n2); root.children.add(n3);
+        n2.children.add(n4);
+
+        // Array
+        int[] parent = {-1, 0, 0, 0, 2}; // -1 means root
+        TreeArray ta = new TreeArray(parent);
+        ta.printChildren(0); // 1 2 3
+
+        // LinkedList
+        TreeList tl = new TreeList(5);
+        tl.addEdge(0, 1); tl.addEdge(0, 2); tl.addEdge(0, 3);
+        tl.addEdge(2, 4);
+        tl.printTree();
+    }
+}
+# Python - Tree Representation
+
+# 1. Using Node class
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.children = []
+
+root = Node(0)
+n1 = Node(1); n2 = Node(2); n3 = Node(3); n4 = Node(4)
+root.children = [n1, n2, n3]
+n2.children = [n4]
+
+# 2. Using Array (Parent Array)
+parent = [-1, 0, 0, 0, 2]  # -1 is root
+def print_children(node):
+    print(f"Children of {node}:", [i for i, p in enumerate(parent) if p == node])
+
+print_children(0)  # 1, 2, 3
+
+# 3. Using LinkedList (Adjacency List)
+from collections import defaultdict
+adj = defaultdict(list)
+edges = [(0, 1), (0, 2), (0, 3), (2, 4)]
+for u, v in edges:
+    adj[u].append(v)
+
+for k in range(5):
+    print(f"{k} -> {adj[k]}")
+// C++ - Tree Representation
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// 1. Using Node and Pointers
+struct Node {
+    int data;
+    vector<Node*> children;
+    Node(int val) : data(val) {}
+};
+
+// 2. Using Array (Parent Array)
+void printChildrenFromArray(vector<int>& parent, int node) {
+    cout << "Children of " << node << ": ";
+    for (int i = 0; i < parent.size(); i++)
+        if (parent[i] == node)
+            cout << i << " ";
+    cout << endl;
+}
+
+// 3. Using Linked List (Adjacency List)
+void printAdjList(vector<vector<int>>& adj) {
+    for (int i = 0; i < adj.size(); i++) {
+        cout << i << " -> ";
+        for (int v : adj[i])
+            cout << v << " ";
+        cout << endl;
+    }
+}
+
+int main() {
+    // Node/pointer representation
+    Node* root = new Node(0);
+    Node* n1 = new Node(1), *n2 = new Node(2), *n3 = new Node(3), *n4 = new Node(4);
+    root->children = {n1, n2, n3};
+    n2->children.push_back(n4);
+
+    // Array representation
+    vector<int> parent = {-1, 0, 0, 0, 2};
+    printChildrenFromArray(parent, 0); // Output: 1 2 3
+
+    // Linked list representation
+    vector<vector<int>> adj(5);
+    adj[0] = {1, 2, 3};
+    adj[2].push_back(4);
+    printAdjList(adj);
+
+    return 0;
+}
