@@ -1,0 +1,225 @@
+// Java - Simplified B+ Tree (Order 3)
+import java.util.*;
+
+class BPlusNode {
+    List<Integer> keys = new ArrayList<>();
+    List<BPlusNode> children = new ArrayList<>();
+    BPlusNode next; // for leaf chaining
+    boolean isLeaf;
+
+    BPlusNode(boolean isLeaf) {
+        this.isLeaf = isLeaf;
+    }
+}
+
+class BPlusTree {
+    BPlusNode root = new BPlusNode(true);
+    final int MAX_KEYS = 2; // Order 3
+
+    void insert(int key) {
+        BPlusNode r = root;
+        if (r.keys.size() == MAX_KEYS) {
+            BPlusNode s = new BPlusNode(false);
+            s.children.add(r);
+            splitChild(s, 0);
+            root = s;
+        }
+        insertNonFull(root, key);
+    }
+
+    void insertNonFull(BPlusNode node, int key) {
+        if (node.isLeaf) {
+            node.keys.add(key);
+            Collections.sort(node.keys);
+        } else {
+            int i = Collections.binarySearch(node.keys, key);
+            i = i >= 0 ? i + 1 : -i - 1;
+            BPlusNode child = node.children.get(i);
+            if (child.keys.size() == MAX_KEYS) {
+                splitChild(node, i);
+                if (key > node.keys.get(i)) i++;
+            }
+            insertNonFull(node.children.get(i), key);
+        }
+    }
+
+    void splitChild(BPlusNode parent, int idx) {
+        BPlusNode full = parent.children.get(idx);
+        BPlusNode sibling = new BPlusNode(full.isLeaf);
+
+        sibling.keys.add(full.keys.remove(1)); // move higher key
+
+        if (!full.isLeaf) {
+            sibling.children.add(full.children.remove(2));
+        } else {
+            sibling.next = full.next;
+            full.next = sibling;
+        }
+
+        parent.keys.add(idx, sibling.keys.get(0));
+        parent.children.add(idx + 1, sibling);
+    }
+
+    void traverse() {
+        BPlusNode curr = root;
+        while (!curr.isLeaf)
+            curr = curr.children.get(0);
+        while (curr != null) {
+            for (int key : curr.keys)
+                System.out.print(key + " ");
+            curr = curr.next;
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        BPlusTree tree = new BPlusTree();
+        for (int val : new int[]{5, 15, 25, 35, 45, 55})
+            tree.insert(val);
+        tree.traverse(); // Output: 5 15 25 35 45 55
+    }
+}
+# Python - Simplified B+ Tree (Order 3)
+class BPlusNode:
+    def __init__(self, is_leaf=False):
+        self.keys = []
+        self.children = []
+        self.next = None
+        self.is_leaf = is_leaf
+
+class BPlusTree:
+    def __init__(self):
+        self.root = BPlusNode(True)
+        self.MAX_KEYS = 2  # Order 3
+
+    def insert(self, key):
+        root = self.root
+        if len(root.keys) == self.MAX_KEYS:
+            new_root = BPlusNode(False)
+            new_root.children.append(root)
+            self.split_child(new_root, 0)
+            self.root = new_root
+        self._insert_non_full(self.root, key)
+
+    def _insert_non_full(self, node, key):
+        if node.is_leaf:
+            node.keys.append(key)
+            node.keys.sort()
+        else:
+            i = 0
+            while i < len(node.keys) and key > node.keys[i]:
+                i += 1
+            if len(node.children[i].keys) == self.MAX_KEYS:
+                self.split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self._insert_non_full(node.children[i], key)
+
+    def split_child(self, parent, i):
+        node = parent.children[i]
+        sibling = BPlusNode(node.is_leaf)
+        sibling.keys.append(node.keys.pop(1))
+        if not node.is_leaf:
+            sibling.children.append(node.children.pop(2))
+        else:
+            sibling.next = node.next
+            node.next = sibling
+        parent.keys.insert(i, sibling.keys[0])
+        parent.children.insert(i + 1, sibling)
+
+    def traverse(self):
+        curr = self.root
+        while not curr.is_leaf:
+            curr = curr.children[0]
+        while curr:
+            print(" ".join(map(str, curr.keys)), end=" ")
+            curr = curr.next
+        print()
+
+tree = BPlusTree()
+for x in [5, 15, 25, 35, 45, 55]:
+    tree.insert(x)
+tree.traverse()  # Output: 5 15 25 35 45 55
+// C++ - Simplified B+ Tree (Order 3)
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct BPlusNode {
+    bool isLeaf;
+    vector<int> keys;
+    vector<BPlusNode*> children;
+    BPlusNode* next;
+    BPlusNode(bool leaf = false) : isLeaf(leaf), next(nullptr) {}
+};
+
+class BPlusTree {
+    BPlusNode* root;
+    const int MAX_KEYS = 2; // Order 3
+
+public:
+    BPlusTree() { root = new BPlusNode(true); }
+
+    void insert(int key) {
+        if (root->keys.size() == MAX_KEYS) {
+            BPlusNode* newRoot = new BPlusNode(false);
+            newRoot->children.push_back(root);
+            splitChild(newRoot, 0);
+            root = newRoot;
+        }
+        insertNonFull(root, key);
+    }
+
+    void insertNonFull(BPlusNode* node, int key) {
+        if (node->isLeaf) {
+            node->keys.push_back(key);
+            sort(node->keys.begin(), node->keys.end());
+        } else {
+            int i = 0;
+            while (i < node->keys.size() && key > node->keys[i]) i++;
+            if (node->children[i]->keys.size() == MAX_KEYS) {
+                splitChild(node, i);
+                if (key > node->keys[i]) i++;
+            }
+            insertNonFull(node->children[i], key);
+        }
+    }
+
+    void splitChild(BPlusNode* parent, int idx) {
+        BPlusNode* node = parent->children[idx];
+        BPlusNode* sibling = new BPlusNode(node->isLeaf);
+        sibling->keys.push_back(node->keys[1]);
+        node->keys.pop_back();
+
+        if (!node->isLeaf)
+            sibling->children.push_back(node->children[2]);
+        else {
+            sibling->next = node->next;
+            node->next = sibling;
+        }
+
+        parent->keys.insert(parent->keys.begin() + idx, sibling->keys[0]);
+        parent->children.insert(parent->children.begin() + idx + 1, sibling);
+    }
+
+    void traverse() {
+        BPlusNode* curr = root;
+        while (!curr->isLeaf)
+            curr = curr->children[0];
+        while (curr) {
+            for (int k : curr->keys)
+                cout << k << " ";
+            curr = curr->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    BPlusTree tree;
+    for (int x : {5, 15, 25, 35, 45, 55})
+        tree.insert(x);
+    tree.traverse(); // Output: 5 15 25 35 45 55
+    return 0;
+}
