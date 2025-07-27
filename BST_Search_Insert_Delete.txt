@@ -1,0 +1,188 @@
+// Java - BST Insert, Search, Delete
+class Node {
+    int data;
+    Node left, right;
+    Node(int val) { data = val; }
+}
+
+class BST {
+    Node insert(Node root, int key) {
+        if (root == null) return new Node(key);
+        if (key < root.data) root.left = insert(root.left, key);
+        else if (key > root.data) root.right = insert(root.right, key);
+        return root;
+    }
+
+    boolean search(Node root, int key) {
+        if (root == null) return false;
+        if (root.data == key) return true;
+        return key < root.data ? search(root.left, key) : search(root.right, key);
+    }
+
+    Node delete(Node root, int key) {
+        if (root == null) return null;
+        if (key < root.data) root.left = delete(root.left, key);
+        else if (key > root.data) root.right = delete(root.right, key);
+        else {
+            if (root.left == null) return root.right;
+            else if (root.right == null) return root.left;
+            root.data = minValue(root.right);
+            root.right = delete(root.right, root.data);
+        }
+        return root;
+    }
+
+    int minValue(Node root) {
+        while (root.left != null) root = root.left;
+        return root.data;
+    }
+
+    void inorder(Node root) {
+        if (root != null) {
+            inorder(root.left);
+            System.out.print(root.data + " ");
+            inorder(root.right);
+        }
+    }
+
+    public static void main(String[] args) {
+        BST tree = new BST();
+        Node root = null;
+        int[] vals = {50, 30, 20, 40, 70, 60, 80};
+        for (int val : vals) root = tree.insert(root, val);
+
+        System.out.print("Inorder: ");
+        tree.inorder(root); // 20 30 40 50 60 70 80
+
+        System.out.println("\nSearch 40: " + tree.search(root, 40));
+        root = tree.delete(root, 50);
+        System.out.print("Inorder after deleting 50: ");
+        tree.inorder(root); // 20 30 40 60 70 80
+    }
+}
+# Python - BST Insert, Search, Delete
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = self.right = None
+
+def insert(root, key):
+    if not root: return Node(key)
+    if key < root.data:
+        root.left = insert(root.left, key)
+    elif key > root.data:
+        root.right = insert(root.right, key)
+    return root
+
+def search(root, key):
+    if not root: return False
+    if root.data == key: return True
+    return search(root.left, key) if key < root.data else search(root.right, key)
+
+def delete(root, key):
+    if not root: return None
+    if key < root.data:
+        root.left = delete(root.left, key)
+    elif key > root.data:
+        root.right = delete(root.right, key)
+    else:
+        if not root.left: return root.right
+        if not root.right: return root.left
+        min_val = find_min(root.right)
+        root.data = min_val
+        root.right = delete(root.right, min_val)
+    return root
+
+def find_min(root):
+    while root.left:
+        root = root.left
+    return root.data
+
+def inorder(root):
+    if root:
+        inorder(root.left)
+        print(root.data, end=' ')
+        inorder(root.right)
+
+# Build tree
+root = None
+for val in [50, 30, 20, 40, 70, 60, 80]:
+    root = insert(root, val)
+
+print("Inorder:", end=' ')
+inorder(root)  # 20 30 40 50 60 70 80
+
+print("\nSearch 40:", search(root, 40))
+root = delete(root, 50)
+print("Inorder after deleting 50:", end=' ')
+inorder(root)  # 20 30 40 60 70 80
+// C++ - BST Insert, Search, Delete
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int key) {
+    if (!root) return new Node(key);
+    if (key < root->data)
+        root->left = insert(root->left, key);
+    else if (key > root->data)
+        root->right = insert(root->right, key);
+    return root;
+}
+
+bool search(Node* root, int key) {
+    if (!root) return false;
+    if (root->data == key) return true;
+    return key < root->data ? search(root->left, key) : search(root->right, key);
+}
+
+int findMin(Node* root) {
+    while (root->left) root = root->left;
+    return root->data;
+}
+
+Node* deleteNode(Node* root, int key) {
+    if (!root) return nullptr;
+    if (key < root->data)
+        root->left = deleteNode(root->left, key);
+    else if (key > root->data)
+        root->right = deleteNode(root->right, key);
+    else {
+        if (!root->left) return root->right;
+        if (!root->right) return root->left;
+        int minVal = findMin(root->right);
+        root->data = minVal;
+        root->right = deleteNode(root->right, minVal);
+    }
+    return root;
+}
+
+void inorder(Node* root) {
+    if (root) {
+        inorder(root->left);
+        cout << root->data << " ";
+        inorder(root->right);
+    }
+}
+
+int main() {
+    Node* root = nullptr;
+    int vals[] = {50, 30, 20, 40, 70, 60, 80};
+    for (int val : vals)
+        root = insert(root, val);
+
+    cout << "Inorder: ";
+    inorder(root); // 20 30 40 50 60 70 80
+    cout << "\nSearch 40: " << (search(root, 40) ? "Found" : "Not Found") << endl;
+
+    root = deleteNode(root, 50);
+    cout << "Inorder after deleting 50: ";
+    inorder(root); // 20 30 40 60 70 80
+    return 0;
+}
