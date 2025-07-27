@@ -1,0 +1,143 @@
+// Python
+class MinHeap:
+    def __init__(self):
+        self.heap = []
+
+    def parent(self, i): return (i - 1) // 2
+    def left(self, i): return 2 * i + 1
+    def right(self, i): return 2 * i + 2
+
+    def insert(self, key):
+        self.heap.append(key)
+        i = len(self.heap) - 1
+        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
+            self.heap[self.parent(i)], self.heap[i] = self.heap[i], self.heap[self.parent(i)]
+            i = self.parent(i)
+
+    def extract_min(self):
+        if not self.heap:
+            return None
+        if len(self.heap) == 1:
+            return self.heap.pop()
+        root = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self.min_heapify(0)
+        return root
+
+    def min_heapify(self, i):
+        l, r, smallest = self.left(i), self.right(i), i
+        if l < len(self.heap) and self.heap[l] < self.heap[smallest]:
+            smallest = l
+        if r < len(self.heap) and self.heap[r] < self.heap[smallest]:
+            smallest = r
+        if smallest != i:
+            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
+            self.min_heapify(smallest)
+
+# Example Usage
+h = MinHeap()
+for val in [3, 1, 6, 5, 2, 4]:
+    h.insert(val)
+print(h.extract_min())  # Output: 1
+
+
+// Java
+import java.util.*;
+
+class MaxHeap {
+    private List<Integer> heap = new ArrayList<>();
+
+    private int parent(int i) { return (i - 1) / 2; }
+    private int left(int i) { return 2 * i + 1; }
+    private int right(int i) { return 2 * i + 2; }
+
+    public void insert(int key) {
+        heap.add(key);
+        int i = heap.size() - 1;
+        while (i > 0 && heap.get(parent(i)) < heap.get(i)) {
+            Collections.swap(heap, i, parent(i));
+            i = parent(i);
+        }
+    }
+
+    public int extractMax() {
+        if (heap.isEmpty()) return -1;
+        if (heap.size() == 1) return heap.remove(0);
+        int root = heap.get(0);
+        heap.set(0, heap.remove(heap.size() - 1));
+        maxHeapify(0);
+        return root;
+    }
+
+    private void maxHeapify(int i) {
+        int l = left(i), r = right(i), largest = i;
+        if (l < heap.size() && heap.get(l) > heap.get(largest)) largest = l;
+        if (r < heap.size() && heap.get(r) > heap.get(largest)) largest = r;
+        if (largest != i) {
+            Collections.swap(heap, i, largest);
+            maxHeapify(largest);
+        }
+    }
+
+    public static void main(String[] args) {
+        MaxHeap h = new MaxHeap();
+        int[] arr = {3, 1, 6, 5, 2, 4};
+        for (int v : arr) h.insert(v);
+        System.out.println(h.extractMax()); // Output: 6
+    }
+}
+
+// C++
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class MinHeap {
+    vector<int> heap;
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return 2 * i + 1; }
+    int right(int i) { return 2 * i + 2; }
+
+    void minHeapify(int i) {
+        int l = left(i), r = right(i), smallest = i;
+        if (l < heap.size() && heap[l] < heap[smallest]) smallest = l;
+        if (r < heap.size() && heap[r] < heap[smallest]) smallest = r;
+        if (smallest != i) {
+            swap(heap[i], heap[smallest]);
+            minHeapify(smallest);
+        }
+    }
+
+public:
+    void insert(int key) {
+        heap.push_back(key);
+        int i = heap.size() - 1;
+        while (i != 0 && heap[parent(i)] > heap[i]) {
+            swap(heap[i], heap[parent(i)]);
+            i = parent(i);
+        }
+    }
+
+    int extractMin() {
+        if (heap.empty()) return -1;
+        if (heap.size() == 1) {
+            int root = heap[0];
+            heap.pop_back();
+            return root;
+        }
+        int root = heap[0];
+        heap[0] = heap.back();
+        heap.pop_back();
+        minHeapify(0);
+        return root;
+    }
+};
+
+int main() {
+    MinHeap h;
+    int arr[] = {3, 1, 6, 5, 2, 4};
+    for (int v : arr) h.insert(v);
+    cout << h.extractMin() << endl;  // Output: 1
+    return 0;
+}
