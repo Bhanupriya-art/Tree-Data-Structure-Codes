@@ -1,0 +1,125 @@
+// Python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+# Example Usage
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: False
+
+
+// Java
+class TrieNode {
+    TrieNode[] children = new TrieNode[26];
+    boolean isEndOfWord;
+}
+
+public class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            int index = c - 'a';
+            if (node.children[index] == null) {
+                node.children[index] = new TrieNode();
+            }
+            node = node.children[index];
+        }
+        node.isEndOfWord = true;
+    }
+
+    public boolean search(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            int index = c - 'a';
+            if (node.children[index] == null) {
+                return false;
+            }
+            node = node.children[index];
+        }
+        return node.isEndOfWord;
+    }
+
+    public static void main(String[] args) {
+        Trie trie = new Trie();
+        trie.insert("apple");
+        System.out.println(trie.search("apple")); // true
+        System.out.println(trie.search("app"));   // false
+    }
+}
+
+// C++
+#include <iostream>
+using namespace std;
+
+struct TrieNode {
+    TrieNode* children[26];
+    bool isEndOfWord;
+    TrieNode() {
+        isEndOfWord = false;
+        for (int i = 0; i < 26; i++) children[i] = nullptr;
+    }
+};
+
+class Trie {
+    TrieNode* root;
+public:
+    Trie() { root = new TrieNode(); }
+
+    void insert(string word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            int index = c - 'a';
+            if (!node->children[index])
+                node->children[index] = new TrieNode();
+            node = node->children[index];
+        }
+        node->isEndOfWord = true;
+    }
+
+    bool search(string word) {
+        TrieNode* node = root;
+        for (char c : word) {
+            int index = c - 'a';
+            if (!node->children[index]) return false;
+            node = node->children[index];
+        }
+        return node->isEndOfWord;
+    }
+};
+
+int main() {
+    Trie trie;
+    trie.insert("apple");
+    cout << (trie.search("apple") ? "Found" : "Not Found") << endl; // Found
+    cout << (trie.search("app") ? "Found" : "Not Found") << endl;   // Not Found
+    return 0;
+}
