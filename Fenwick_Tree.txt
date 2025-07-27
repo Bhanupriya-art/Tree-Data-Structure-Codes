@@ -1,0 +1,112 @@
+// Python
+class FenwickTree:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
+
+    def update(self, index, delta):
+        while index <= self.n:
+            self.bit[index] += delta
+            index += index & -index
+
+    def prefix_sum(self, index):
+        res = 0
+        while index > 0:
+            res += self.bit[index]
+            index -= index & -index
+        return res
+
+    def range_sum(self, left, right):
+        return self.prefix_sum(right) - self.prefix_sum(left - 1)
+
+# Example Usage
+arr = [1, 2, 3, 4, 5]
+bit = FenwickTree(len(arr))
+for i, val in enumerate(arr, 1):
+    bit.update(i, val)
+print(bit.range_sum(2, 4))  # Output: 9 (2+3+4)
+
+
+// C++
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class FenwickTree {
+    vector<int> bit;
+    int n;
+
+public:
+    FenwickTree(int size) : n(size), bit(size + 1, 0) {}
+
+    void update(int index, int delta) {
+        while (index <= n) {
+            bit[index] += delta;
+            index += index & -index;
+        }
+    }
+
+    int prefix_sum(int index) {
+        int res = 0;
+        while (index > 0) {
+            res += bit[index];
+            index -= index & -index;
+        }
+        return res;
+    }
+
+    int range_sum(int left, int right) {
+        return prefix_sum(right) - prefix_sum(left - 1);
+    }
+};
+
+int main() {
+    vector<int> arr = {1, 2, 3, 4, 5};
+    FenwickTree ft(arr.size());
+    for (int i = 0; i < arr.size(); ++i)
+        ft.update(i + 1, arr[i]);
+
+    cout << ft.range_sum(2, 4) << endl; // Output: 9
+    return 0;
+}
+
+
+// Java
+class FenwickTree {
+    int[] bit;
+    int n;
+
+    FenwickTree(int size) {
+        n = size;
+        bit = new int[n + 1];
+    }
+
+    void update(int index, int delta) {
+        while (index <= n) {
+            bit[index] += delta;
+            index += index & -index;
+        }
+    }
+
+    int prefixSum(int index) {
+        int res = 0;
+        while (index > 0) {
+            res += bit[index];
+            index -= index & -index;
+        }
+        return res;
+    }
+
+    int rangeSum(int left, int right) {
+        return prefixSum(right) - prefixSum(left - 1);
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5};
+        FenwickTree ft = new FenwickTree(arr.length);
+        for (int i = 0; i < arr.length; i++)
+            ft.update(i + 1, arr[i]);
+
+        System.out.println(ft.rangeSum(2, 4)); // Output: 9
+    }
+}
