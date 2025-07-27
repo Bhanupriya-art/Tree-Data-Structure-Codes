@@ -1,0 +1,207 @@
+// Java
+enum Color { RED, BLACK; }
+
+class Node {
+    int key;
+    Color color;
+    Node left, right, parent;
+
+    Node(int key) {
+        this.key = key;
+        this.color = Color.RED;
+        this.left = this.right = this.parent = null;
+    }
+}
+
+class RedBlackTree {
+    private final Node TNULL;
+    private Node root;
+
+    public RedBlackTree() {
+        TNULL = new Node(0);
+        TNULL.color = Color.BLACK;
+        root = TNULL;
+    }
+
+    public void insert(int key) {
+        Node node = new Node(key);
+        node.left = node.right = TNULL;
+        Node parent = null;
+        Node current = root;
+
+        while (current != TNULL) {
+            parent = current;
+            if (key < current.key)
+                current = current.left;
+            else
+                current = current.right;
+        }
+
+        node.parent = parent;
+        if (parent == null)
+            root = node;
+        else if (key < parent.key)
+            parent.left = node;
+        else
+            parent.right = node;
+
+        node.color = Color.RED;
+        fixInsert(node);
+    }
+
+    private void fixInsert(Node node) {
+        while (node.parent != null && node.parent.color == Color.RED) {
+            // Placeholder: balancing logic (rotations + recoloring) goes here
+            break;
+        }
+        root.color = Color.BLACK;
+    }
+
+    public void inorder(Node node) {
+        if (node != TNULL) {
+            inorder(node.left);
+            System.out.print(node.key + "(" + node.color + ") ");
+            inorder(node.right);
+        }
+    }
+
+    public void printTree() {
+        inorder(root);
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        RedBlackTree tree = new RedBlackTree();
+        tree.insert(10);
+        tree.insert(20);
+        tree.insert(30);
+        tree.printTree();  // Output: 10(RED) 20(RED) 30(RED) — until balancing added
+    }
+}
+
+// Python
+# A minimal Red-Black Tree node class (for demonstration)
+class Node:
+    def __init__(self, key, color="RED"):
+        self.key = key
+        self.color = color
+        self.left = None
+        self.right = None
+        self.parent = None
+
+class RedBlackTree:
+    def __init__(self):
+        self.TNULL = Node(0, "BLACK")
+        self.root = self.TNULL
+
+    def insert(self, key):
+        node = Node(key)
+        node.left = self.TNULL
+        node.right = self.TNULL
+        parent = None
+        current = self.root
+        while current != self.TNULL:
+            parent = current
+            if node.key < current.key:
+                current = current.left
+            else:
+                current = current.right
+        node.parent = parent
+        if parent is None:
+            self.root = node
+        elif node.key < parent.key:
+            parent.left = node
+        else:
+            parent.right = node
+        node.color = "RED"
+        self.fix_insert(node)
+
+    def fix_insert(self, node):
+        while node.parent and node.parent.color == "RED":
+            # Simplified: balancing logic (rotations + recoloring) goes here
+            break
+        self.root.color = "BLACK"
+
+// C++
+#include <iostream>
+using namespace std;
+
+enum Color { RED, BLACK };
+
+struct Node {
+    int key;
+    Color color;
+    Node *left, *right, *parent;
+
+    Node(int key) : key(key), color(RED), left(nullptr), right(nullptr), parent(nullptr) {}
+};
+
+class RedBlackTree {
+private:
+    Node* root;
+    Node* TNULL;
+
+public:
+    RedBlackTree() {
+        TNULL = new Node(0);
+        TNULL->color = BLACK;
+        root = TNULL;
+    }
+
+    void insert(int key) {
+        Node* node = new Node(key);
+        node->left = node->right = TNULL;
+
+        Node* parent = nullptr;
+        Node* current = root;
+
+        while (current != TNULL) {
+            parent = current;
+            if (key < current->key)
+                current = current->left;
+            else
+                current = current->right;
+        }
+
+        node->parent = parent;
+        if (!parent)
+            root = node;
+        else if (key < parent->key)
+            parent->left = node;
+        else
+            parent->right = node;
+
+        node->color = RED;
+        fixInsert(node);
+    }
+
+    void fixInsert(Node* node) {
+        while (node->parent && node->parent->color == RED) {
+            // Placeholder: Insert balancing logic (rotations + recoloring)
+            break;
+        }
+        root->color = BLACK;
+    }
+
+    void inorder(Node* node) {
+        if (node != TNULL) {
+            inorder(node->left);
+            cout << node->key << "(" << (node->color == RED ? "R" : "B") << ") ";
+            inorder(node->right);
+        }
+    }
+
+    void printTree() {
+        inorder(root);
+        cout << endl;
+    }
+};
+
+int main() {
+    RedBlackTree tree;
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(30);
+    tree.printTree();  // Output: 10(R) 20(R) 30(R) — until fixInsert is fully implemented
+    return 0;
+}
